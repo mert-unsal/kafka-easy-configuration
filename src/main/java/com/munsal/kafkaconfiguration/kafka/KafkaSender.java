@@ -6,13 +6,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
 @Component
 public class KafkaSender {
-    private final HashMap<String, KafkaTemplate<String,Object>> kafkaTemplateHashMap;
+    private final Map<String, KafkaTemplate<String,Object>> kafkaTemplateHashMap;
 
     public <T> void send(String kafkaTemplateName, String topic, String key, T event) {
         Optional.ofNullable(kafkaTemplateHashMap.get(kafkaTemplateName)).ifPresentOrElse(kafkaTemplate -> {

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.kafka.listener.ContainerProperties;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -41,10 +42,6 @@ public class Consumer {
     private Boolean stopImmediate;
     private Integer phase;
     private String clientId;
-    private Integer retryCount;
-    private Long backoffIntervalMillis;
-    private Double multiplier;
-    private Long maxInterval;
     private Integer syncCommitTimeoutSecond;
     private Boolean syncCommit;
     private Boolean fixTxOffsets;
@@ -55,8 +52,15 @@ public class Consumer {
     private Boolean autoStartup;
     private Boolean batchListener;
     private Boolean ackDiscarded;
+    // Retry Configuration
     private Boolean isExponentialRetry;
-    private Boolean slackAlertEnabled;
+    private Integer backoffIntervalMillis;
+    private Long maxInterval;
+    private Integer maxAttempts;
+    private Integer multiplier;
+    private List<String> includeTopics;
+    private Class<? extends Throwable> retryOn;
+    private Class<? extends Throwable> notRetryOn;
     private Map<String, Object> props;
 }
 

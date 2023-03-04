@@ -103,18 +103,6 @@ public class KafkaConsumerUtil implements JsonUtil {
         Optional.ofNullable(consumer.getAutoStartup()).ifPresent(factory::setAutoStartup);
         Optional.ofNullable(consumer.getBatchListener()).ifPresent(factory::setBatchListener);
         Optional.ofNullable(consumer.getAckDiscarded()).ifPresent(factory::setAckDiscarded);
-        //TODO: UPGRADE THIS PART
-        // https://docs.spring.io/spring-kafka/api/org/springframework/kafka/retrytopic/RetryTopicConfigurer.html
-        BackOff backoff;
-        if(Optional.ofNullable(consumer.getIsExponentialRetry()).isPresent()) {
-            ExponentialBackOffWithMaxRetries exponentialBackOffWithMaxRetries = new ExponentialBackOffWithMaxRetries(Optional.ofNullable(consumer.getRetryCount()).orElse(0));
-            exponentialBackOffWithMaxRetries.setInitialInterval(Optional.ofNullable(consumer.getBackoffIntervalMillis()).orElse(1000L));
-            exponentialBackOffWithMaxRetries.setMultiplier(Optional.ofNullable(consumer.getMultiplier()).orElse(2.0));
-            exponentialBackOffWithMaxRetries.setMaxInterval(Optional.ofNullable(consumer.getMaxInterval()).orElse(1000_000L));
-            backoff = exponentialBackOffWithMaxRetries;
-        } else {
-            backoff = new FixedBackOff(Optional.of(consumer.getBackoffIntervalMillis()).orElse(50L),Optional.of(consumer.getRetryCount()).orElse(1));
-        }
         factory.setCommonErrorHandler(new DefaultErrorHandler(((consumerRecord, exception) -> {
             handleFailover(suitableKafkaTemplate,consumer,consumerRecord,exception);
         })));
