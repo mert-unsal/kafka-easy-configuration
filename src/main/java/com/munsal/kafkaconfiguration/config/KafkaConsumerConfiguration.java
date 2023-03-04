@@ -39,7 +39,7 @@ public class KafkaConsumerConfiguration {
             } else {
                 retryTopicConfigurationBuilder.fixedBackOff(Optional.ofNullable(value.getBackoffIntervalMillis()).orElse(250));
             }
-            retryTopicConfigurationBuilder.maxAttempts(5).includeTopics(List.of(value.getTopic()));
+            retryTopicConfigurationBuilder.maxAttempts(Optional.ofNullable(value.getMaxAttempts()).orElse(5)).includeTopics(List.of(value.getTopic()));
             if(Objects.nonNull(value.getRetryOn()) && Objects.nonNull(value.getNotRetryOn())) {
                 throw new IllegalArgumentException("Please use supply only retry-on filed or only not-retry-on field on the your kafka yml");
             }
