@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: kafka-configuration
+    description: Easy kafka configuration library
+  profiles:
+    active: native
+springdoc:
+  api-docs:
+    path: /api-docs
+
+server:
+  port: 8080
