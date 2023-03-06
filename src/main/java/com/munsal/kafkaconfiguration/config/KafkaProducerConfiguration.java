@@ -8,6 +8,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,15 +18,20 @@ import java.util.stream.Collectors;
 public class KafkaProducerConfiguration {
     private final KafkaConfiguration kafkaConfiguration;
 
-    @Bean("kafkaProducerTemplateMap")
-    public Map<String, KafkaTemplate<String,Object>> kafkaTemplateHashMap() {
-        return Optional.ofNullable(kafkaConfiguration.getProducers())
-                .map(producerMap -> producerMap.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry-> kafkaTemplate(entry.getValue()))))
-                .orElseThrow(() -> new RuntimeException("You need to supply at least 1 producer valid producer configuration on your yml file."));
+    @Bean("kafkaTemplateMap")
+    public Map<Integer, KafkaTemplate<String, Object>> kafkaTemplateMap() {
+        Map<Integer, KafkaTemplate<String, Object>> kafkaTemplateMap;
+        Optional<Map<String, Producer>> optionalMap = Optional.ofNullable(kafkaConfiguration.getProducers());
+        if (optionalMap.isPresent()) {
+            kafkaTemplateMap = optionalMap.get().entrySet().stream().collect(Collectors.toMap(o -> o.getKey().hashCode(), entry -> generateKafkaTemplate(entry.getValue())));
+        } else {
+            throw new RuntimeException("You need to supply at least 1 producer valid producer configuration on your yml file.");
+        }
+        return kafkaTemplateMap;
     }
 
-    private <T> KafkaTemplate<String,T> kafkaTemplate(Producer producer) {
-        ProducerFactory<String,T> producerFactory = new DefaultKafkaProducerFactory<>(producer.getProps());
+    private KafkaTemplate<String, Object> generateKafkaTemplate(Producer producer) {
+        ProducerFactory<String, Object> producerFactory = new DefaultKafkaProducerFactory<>(producer.getProps());
         return new KafkaTemplate<>(producerFactory);
     }
 

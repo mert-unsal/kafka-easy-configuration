@@ -1,12 +1,14 @@
 package com.munsal.kafkaconfiguration.model;
 
+import com.munsal.kafkaconfiguration.model.retry.BlockingRetry;
+import com.munsal.kafkaconfiguration.model.retry.NonBlockingRetry;
+import com.munsal.kafkaconfiguration.model.retry.RetryType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.kafka.listener.ContainerProperties;
 
-import java.util.List;
 import java.util.Map;
 
 
@@ -52,15 +54,9 @@ public class Consumer {
     private Boolean autoStartup;
     private Boolean batchListener;
     private Boolean ackDiscarded;
-    // Retry Configuration
-    private Boolean isExponentialRetry;
-    private Integer backoffIntervalMillis;
-    private Long maxInterval;
-    private Integer maxAttempts;
-    private Integer multiplier;
-    private List<String> includeTopics;
-    private Class<? extends Throwable> retryOn;
-    private Class<? extends Throwable> notRetryOn;
+    private RetryType retryType;
+    private NonBlockingRetry nonBlockingRetry;
+    private BlockingRetry blockingRetry;
     private Map<String, Object> props;
 }
 

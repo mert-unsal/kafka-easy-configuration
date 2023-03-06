@@ -8,6 +8,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@DependsOn({"kafkaConfiguration","kafkaListenerContainerFactoryMap","kafkaProducerTemplateMap"})
+@DependsOn({"kafkaConfiguration","kafkaListenerContainerFactoryMap","kafkaTemplateMap"})
 public @interface DependsOnKafkaConfiguration {
 }
