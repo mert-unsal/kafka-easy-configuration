@@ -48,9 +48,9 @@ public class MyServiceConsumer {
     
     
      @KafkaListener(
-            topics = "${kafka-config.consumers[-create-consumer].retry-topic}",
-            groupId = "${kafka-config.consumers[-create-consumer].props[retry-group.id]}",
-            containerFactory = "#{kafkaListenerContainerFactoryMap['-create-consumer']}"
+            topics = "${kafka-config.consumers['my-service-consumer'].retry-topic}",
+            groupId = "${kafka-config.consumers['my-service-consumer'].props[retry-group.id]}",
+            containerFactory = "#{kafkaListenerContainerFactoryMap['my-service-consumer']}"
     )
     public void consumeRetry(@Payload MyServiceEvent message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
@@ -60,6 +60,13 @@ public class MyServiceConsumer {
     }
 }
 ```
+
+#### Here `@DependsOnKafkaFactories` make your service waiting till your kafka listener bean is ready.It supply you a bean which contains your all kafkaListenerContainerFactory with respect to your yml configuration.
+```yml
+consumers:
+    "[my-service-consumer]":
+```
+#### this is example usage, you may get the containerFactory with the same key as you provide on your kafka yml, for instance, on this case you will get with ``example-consumer`` keyword
 
 ## Creating a Failover Recovery Process which will implements FailoverHandler
 ```
@@ -147,9 +154,14 @@ kafka-config:
       retry-count: 1
       sync-commit: true
       sync-commit-timeout-second: 5
-      backoffIntervalMillis: 1000 #wait time for retry
-      missingTopicAlertEnable: false
-      isExponentialRetry: true
+      retry-type: no_retry
+      non-blocking-retry:
+        include-topics: migros.case.study.courier.topic
+        max-attempts: 1
+        is-exponential-retry: true
+        multiplier: 2
+        backoff-interval-millis: 1000
+        retry-on-exception: com.migros.casestudy.exception.BaseException
       props:
         "[group.id]": munsal.example.myservice.group
         "[retry-group.id]": munsal.example.myservice.0.retry.group
