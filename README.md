@@ -35,8 +35,8 @@ This step is crucial thus we need to wait till our all kafka configuration beans
 @DependsOnKafkaFactories
 public class MyServiceConsumer {
     @KafkaListener(
-            topics = "${kafka-config.consumers[-create-consumer].topic}",
-            groupId = "${kafka-config.consumers[-create-consumer].props[group.id]}",
+            topics = "${kafka-config.consumers['my-service-consumer'].topic}",
+            groupId = "${kafka-config.consumers['my-service-consumer'].props[group.id]}",
             containerFactory = "#{kafkaListenerContainerFactoryMap['my-service-consumer']}"
     )
     public void consume(@Payload MyServiceEvent message,
