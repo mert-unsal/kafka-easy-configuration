@@ -37,7 +37,7 @@ public class MyServiceConsumer {
     @KafkaListener(
             topics = "${kafka-config.consumers[-create-consumer].topic}",
             groupId = "${kafka-config.consumers[-create-consumer].props[group.id]}",
-            containerFactory = "#{kafkaListenerContainerFactoryMap['-create-consumer']}"
+            containerFactory = "#{kafkaListenerContainerFactoryMap['my-service-consumer']}"
     )
     public void consume(@Payload MyServiceEvent message,
                         @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
